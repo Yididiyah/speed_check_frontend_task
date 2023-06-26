@@ -12,35 +12,34 @@ import {
 import { useState } from "react";
 import DistrictListComponent from "./DistrictListComponent";
 
-const data = {
-  level1: [
-    "District A",
-    "District B",
-    "District C",
-    "District D",
-    "District E",
-  ],
-  level2: ["District A", "District B", "District C", "District D"],
-};
+// const data = {
+//   level1: [
+//     "District A",
+//     "District B",
+//     "District C",
+//     "District D",
+//     "District E",
+//   ],
+//   level2: ["District A", "District B", "District C", "District D"],
+// };
 
-const SelectComponent = () => {
-  const [selectedLevel, setSelectedLevel] = useState("");
+const SelectComponent = ({ selectedLevel, setSelectedLevel, districtData }) => {
   const [labelVisible, setLabelVisible] = useState(true);
-  const [districtList, setDistrictList] = useState([]);
+  // const [districtList, setDistrictList] = useState([]);
 
   const handleChange = (event) => {
     setSelectedLevel(event.target.value);
     setLabelVisible(false);
-    switch (event.target.value) {
-      case "level1":
-        setDistrictList(data.level1);
-        break;
-      case "level2":
-        setDistrictList(data.level2);
-        break;
-      default:
-        setDistrictList([]);
-    }
+    // switch (event.target.value) {
+    //   case "level1":
+    //     setDistrictList(data.level1);
+    //     break;
+    //   case "level2":
+    //     setDistrictList(data.level2);
+    //     break;
+    //   default:
+    //     setDistrictList([]);
+    // }
   };
   return (
     <Stack
@@ -74,12 +73,12 @@ const SelectComponent = () => {
               />
             }
           >
-            <MenuItem value={"level1"}>
+            <MenuItem value={1}>
               <Typography sx={{ fontSize: "1.2rem", fontWeight: "bold" }}>
                 Level 1
               </Typography>
             </MenuItem>
-            <MenuItem value={"level2"}>
+            <MenuItem value={2}>
               <Typography sx={{ fontSize: "1.2rem", fontWeight: "bold" }}>
                 Level 2
               </Typography>
@@ -87,7 +86,7 @@ const SelectComponent = () => {
           </Select>
         </FormControl>
       </Box>
-      <DistrictListComponent districtList={districtList} />
+      <DistrictListComponent districtList={districtData} />
     </Stack>
   );
 };
