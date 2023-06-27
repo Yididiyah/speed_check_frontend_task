@@ -8,6 +8,7 @@ import SelectComponent from "@/components/SelectComponent";
 import MapComponent from "@/components/Map/MapComponent";
 import { fetchGeoJSONData, fetchJSONData } from "@/utils/api";
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 
 const DEFAULT_CENTER = [55.5, -1.9];
 
@@ -15,6 +16,8 @@ export default function Home() {
   const [geoJSONData, setGeoJSONData] = useState(null);
   const [districtData, setDistrictData] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedDistrictFeature, setSelectedDistrictFeature] = useState(null);
 
   // function to determine color based on density value
   const getColor = (density) => {
@@ -38,7 +41,7 @@ export default function Home() {
   // function to style the choropleth feature
   const style = (feature) => {
     const density = feature.properties.density;
-    console.log("density", density);
+    // console.log("density", density);
     return {
       // fillColor: getColor(dataBasedOnFeature?.properties.Density),
       fillColor: getColor(density),
@@ -109,12 +112,24 @@ export default function Home() {
         });
         setGeoJSONData({ ...geoJson });
         setDistrictData(data.features);
-        console.log("GeoJsonData", geoJson);
+        // console.log("GeoJsonData", geoJson);
       } catch (error) {
         console.error("Error fetching GeoJSON data:", error);
       }
     })();
   }, [selectedLevel]);
+
+  useEffect(() => {
+    if (geoJSONData) {
+      const featureGeoJson = geoJSONData.features.find((feature) => {
+        const featureName =
+          feature.properties.lvl1_name || feature.properties.lvl2_name;
+        // console.log("featureName", featureName);
+        return featureName === selectedDistrict;
+      });
+      setSelectedDistrictFeature(featureGeoJson);
+    }
+  }, [selectedDistrict, geoJSONData]);
 
   return (
     <>
@@ -148,6 +163,7 @@ export default function Home() {
                 selectedLevel={selectedLevel}
                 setSelectedLevel={setSelectedLevel}
                 districtData={districtData}
+                setSelectedDistrict={setSelectedDistrict}
               />
             </Grid>
             <Grid item xs={9}>
@@ -161,6 +177,7 @@ export default function Home() {
                 maxZoom={10}
                 minZoom={3}
                 zoomControl={true}
+                selectedDistrictFeature={selectedDistrictFeature}
               >
                 {({ TileLayer, GeoJSON, Marker, Popup }) => {
                   return (
@@ -172,12 +189,13 @@ export default function Home() {
 
                       {geoJSONData && (
                         <GeoJSON
-                          key={JSON.stringify(geoJSONData)}
+                          key={JSON.stringify(districtData)}
                           data={geoJSONData}
                           style={style}
                           onEachFeature={onEachFeature}
                         />
                       )}
+
                       {/* <Marker position={DEFAULT_CENTER}>
                       <Popup>
                         A pretty CSS3 popup. <br /> Easily customizable.

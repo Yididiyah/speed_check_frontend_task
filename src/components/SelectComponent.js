@@ -23,7 +23,12 @@ import DistrictListComponent from "./DistrictListComponent";
 //   level2: ["District A", "District B", "District C", "District D"],
 // };
 
-const SelectComponent = ({ selectedLevel, setSelectedLevel, districtData }) => {
+const SelectComponent = ({
+  selectedLevel,
+  setSelectedLevel,
+  districtData,
+  setSelectedDistrict,
+}) => {
   const [labelVisible, setLabelVisible] = useState(true);
   // const [districtList, setDistrictList] = useState([]);
 
@@ -86,7 +91,10 @@ const SelectComponent = ({ selectedLevel, setSelectedLevel, districtData }) => {
           </Select>
         </FormControl>
       </Box>
-      <DistrictListComponent districtList={districtData} />
+      <DistrictListComponent
+        districtList={districtData}
+        setSelectedDistrict={setSelectedDistrict}
+      />
     </Stack>
   );
 };
