@@ -15,6 +15,7 @@ const Map = ({
   width,
   height,
   selectedDistrictFeature,
+  withZoom,
   ...rest
 }) => {
   let mapClassName = styles.map;
@@ -30,6 +31,7 @@ const Map = ({
     const [popupLng, setPopupLng] = useState(0);
     const [name, setName] = useState("");
     const [density, setDensity] = useState("");
+
     useEffect(() => {
       if (selectedDistrictFeature && map) {
         const geometry = Leaflet.geoJSON(selectedDistrictFeature.geometry);
@@ -41,7 +43,9 @@ const Map = ({
 
         const geoJsonBounds = geometry.getBounds();
 
-        map.fitBounds(geoJsonBounds);
+        if (withZoom) {
+          map.fitBounds(geoJsonBounds);
+        }
 
         console.log("selectedDistrictFeature", selectedDistrictFeature);
         const { _northEast, _southWest } = geoJsonBounds;

@@ -1,6 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
 
 import { Box, Container, Grid, Typography } from "@mui/material";
 import SelectComponent from "@/components/SelectComponent";
@@ -8,8 +6,6 @@ import SelectComponent from "@/components/SelectComponent";
 import MapComponent from "@/components/Map/MapComponent";
 import { fetchGeoJSONData, fetchJSONData } from "@/utils/api";
 import { useState, useEffect } from "react";
-
-import dynamic from "next/dynamic";
 import {
   style,
   highlightFeature,
@@ -24,12 +20,21 @@ export default function Home() {
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedDistrictFeature, setSelectedDistrictFeature] = useState(null);
+  const [withZoom, setWithZoom] = useState(false);
 
   // to bind mouse events to the choropleth feature
   const onEachFeature = (feature, layer) => {
     layer.on({
-      mouseover: highlightFeature,
+      mouseover: (event) => {
+        highlightFeature(event);
+        setWithZoom(false);
+        setSelectedDistrictFeature(feature);
+      },
       mouseout: resetHighlight,
+      click: () => {
+        setWithZoom(false);
+        setSelectedDistrictFeature(feature);
+      },
     });
   };
 
@@ -77,6 +82,7 @@ export default function Home() {
           feature.properties.lvl1_name || feature.properties.lvl2_name;
         return featureName === selectedDistrict;
       });
+      setWithZoom(true);
       setSelectedDistrictFeature(featureGeoJson);
     }
   }, [selectedDistrict, geoJSONData]);
@@ -128,6 +134,7 @@ export default function Home() {
                 minZoom={3}
                 zoomControl={true}
                 selectedDistrictFeature={selectedDistrictFeature}
+                withZoom={withZoom}
               >
                 {({ TileLayer, GeoJSON, Marker, Popup }) => {
                   return (
