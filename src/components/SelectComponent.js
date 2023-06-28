@@ -30,28 +30,13 @@ const SelectComponent = ({
   setSelectedDistrict,
 }) => {
   const [labelVisible, setLabelVisible] = useState(true);
-  // const [districtList, setDistrictList] = useState([]);
 
   const handleChange = (event) => {
     setSelectedLevel(event.target.value);
     setLabelVisible(false);
-    // switch (event.target.value) {
-    //   case "level1":
-    //     setDistrictList(data.level1);
-    //     break;
-    //   case "level2":
-    //     setDistrictList(data.level2);
-    //     break;
-    //   default:
-    //     setDistrictList([]);
-    // }
   };
   return (
-    <Stack
-      justifyContent="space-between"
-      // height="30rem"
-      sx={{ height: "100%" }}
-    >
+    <Stack justifyContent="space-between" sx={{ height: "100%" }}>
       <Box sx={{ minWidth: 60 }}>
         <FormControl fullWidth>
           {labelVisible && (

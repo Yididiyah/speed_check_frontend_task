@@ -4,7 +4,8 @@ import "leaflet/dist/leaflet.css";
 
 import styles from "@/styles/Map.module.css";
 import { useEffect, useState } from "react";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import Legend from "./Legend/Legend";
 
 const { MapContainer, useMap, Popup } = ReactLeaflet;
 
@@ -21,6 +22,7 @@ const Map = ({
   if (className) {
     mapClassName = `${mapClassName} ${className}`;
   }
+
   const ZoomToDistrict = () => {
     const map = useMap();
     const [showPopup, setShowPopup] = useState(false);
@@ -58,11 +60,14 @@ const Map = ({
       </Popup>
     ) : null;
   };
-
+  // console.log("MapContainer Rendered");
   return (
     <MapContainer className={mapClassName} {...rest}>
       {children(ReactLeaflet, Leaflet)}
       {selectedDistrictFeature && <ZoomToDistrict />}
+      <Box sx={{ position: "relative" }}>
+        <Legend />
+      </Box>
     </MapContainer>
   );
 };

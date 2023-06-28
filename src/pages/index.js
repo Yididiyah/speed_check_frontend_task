@@ -8,7 +8,13 @@ import SelectComponent from "@/components/SelectComponent";
 import MapComponent from "@/components/Map/MapComponent";
 import { fetchGeoJSONData, fetchJSONData } from "@/utils/api";
 import { useState, useEffect } from "react";
+
 import dynamic from "next/dynamic";
+import {
+  style,
+  highlightFeature,
+  resetHighlight,
+} from "@/components/Map/mapUtils";
 
 const DEFAULT_CENTER = [55.5, -1.9];
 
@@ -19,62 +25,6 @@ export default function Home() {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedDistrictFeature, setSelectedDistrictFeature] = useState(null);
 
-  // function to determine color based on density value
-  const getColor = (density) => {
-    return density > 120
-      ? "#800026"
-      : density > 90
-      ? "#BD0026"
-      : density > 70
-      ? "#E31A1C"
-      : density > 50
-      ? "#FC4E2A"
-      : density > 30
-      ? "#FD8D3C"
-      : density > 20
-      ? "#FEB24C"
-      : density > 0
-      ? "#FED976"
-      : "#FFEDA0";
-  };
-
-  // function to style the choropleth feature
-  const style = (feature) => {
-    const density = feature.properties.density;
-    // console.log("density", density);
-    return {
-      // fillColor: getColor(dataBasedOnFeature?.properties.Density),
-      fillColor: getColor(density),
-      fillOpacity: 0.8,
-      weight: 2,
-      opacity: 1,
-      color: "white",
-    };
-  };
-
-  // function to highlight the choropleth feature on mouse hover
-  const highlightFeature = (event) => {
-    const layer = event.target;
-    layer.setStyle({
-      weight: 5,
-      color: "#666",
-      dashArray: "",
-      fillOpacity: 0.7,
-    });
-  };
-
-  // function to reset the choropleth feature style on mouseout
-  const resetHighlight = (event) => {
-    const layer = event.target;
-    layer.setStyle({
-      weight: 2,
-      opacity: 1,
-      color: "white",
-      dashArray: "3",
-      fillOpacity: 0.7,
-    });
-  };
-
   // to bind mouse events to the choropleth feature
   const onEachFeature = (feature, layer) => {
     layer.on({
@@ -84,7 +34,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    (async function fetchData() {
+    async function fetchData() {
       try {
         const geoJson = await fetchGeoJSONData({
           division: selectedLevel || 1,
@@ -116,7 +66,8 @@ export default function Home() {
       } catch (error) {
         console.error("Error fetching GeoJSON data:", error);
       }
-    })();
+    }
+    fetchData();
   }, [selectedLevel]);
 
   useEffect(() => {
@@ -124,7 +75,6 @@ export default function Home() {
       const featureGeoJson = geoJSONData.features.find((feature) => {
         const featureName =
           feature.properties.lvl1_name || feature.properties.lvl2_name;
-        // console.log("featureName", featureName);
         return featureName === selectedDistrict;
       });
       setSelectedDistrictFeature(featureGeoJson);
