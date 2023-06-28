@@ -9,12 +9,16 @@ import {
   Typography,
 } from "@mui/material";
 
-const DistrictListComponent = ({ districtList, setSelectedDistrict }) => {
+const DistrictListComponent = ({
+  districtList,
+  setSelectedDistrict,
+  setZoomByButton,
+}) => {
   const handleClick = (event, district) => {
     const districtName =
       district.properties.lvl1_name || district.properties.lvl2_name;
     setSelectedDistrict(districtName);
-    // console.log("district clicked", districtName);
+    setZoomByButton(true);
   };
   return (
     <List spacing={0.8} sx={{ maxHeight: "20rem", overflow: "auto" }}>

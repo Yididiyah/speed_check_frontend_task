@@ -21,6 +21,7 @@ export default function Home() {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedDistrictFeature, setSelectedDistrictFeature] = useState(null);
   const [withZoom, setWithZoom] = useState(false);
+  const [zoomByButton, setZoomByButton] = useState(false);
 
   // to bind mouse events to the choropleth feature
   const onEachFeature = (feature, layer) => {
@@ -120,6 +121,7 @@ export default function Home() {
                 setSelectedLevel={setSelectedLevel}
                 districtData={districtData}
                 setSelectedDistrict={setSelectedDistrict}
+                setZoomByButton={setZoomByButton}
               />
             </Grid>
             <Grid item xs={9}>
@@ -135,6 +137,9 @@ export default function Home() {
                 zoomControl={true}
                 selectedDistrictFeature={selectedDistrictFeature}
                 withZoom={withZoom}
+                setSelectedLevel={setSelectedLevel}
+                zoomByButton={zoomByButton}
+                setZoomByButton={setZoomByButton}
               >
                 {({ TileLayer, GeoJSON, Marker, Popup }) => {
                   return (

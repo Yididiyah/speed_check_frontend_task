@@ -9,27 +9,24 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DistrictListComponent from "./DistrictListComponent";
-
-// const data = {
-//   level1: [
-//     "District A",
-//     "District B",
-//     "District C",
-//     "District D",
-//     "District E",
-//   ],
-//   level2: ["District A", "District B", "District C", "District D"],
-// };
 
 const SelectComponent = ({
   selectedLevel,
   setSelectedLevel,
   districtData,
   setSelectedDistrict,
+  setZoomByButton,
 }) => {
   const [labelVisible, setLabelVisible] = useState(true);
+
+  useEffect(() => {
+    setLabelVisible(false);
+  }, [selectedLevel]);
+  useEffect(() => {
+    setLabelVisible(true);
+  }, []);
 
   const handleChange = (event) => {
     setSelectedLevel(event.target.value);
@@ -79,6 +76,7 @@ const SelectComponent = ({
       <DistrictListComponent
         districtList={districtData}
         setSelectedDistrict={setSelectedDistrict}
+        setZoomByButton={setZoomByButton}
       />
     </Stack>
   );

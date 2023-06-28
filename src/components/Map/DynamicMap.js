@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import Legend from "./Legend/Legend";
 
-const { MapContainer, useMap, Popup } = ReactLeaflet;
+const { MapContainer, useMap, useMapEvent, Popup } = ReactLeaflet;
 
 const Map = ({
   children,
@@ -16,6 +16,9 @@ const Map = ({
   height,
   selectedDistrictFeature,
   withZoom,
+  setSelectedLevel,
+  zoomByButton,
+  setZoomByButton,
   ...rest
 }) => {
   let mapClassName = styles.map;
@@ -24,13 +27,34 @@ const Map = ({
     mapClassName = `${mapClassName} ${className}`;
   }
 
-  const ZoomToDistrict = () => {
+  const MapUtils = () => {
     const map = useMap();
     const [showPopup, setShowPopup] = useState(false);
     const [popupLat, setPopupLat] = useState(0);
     const [popupLng, setPopupLng] = useState(0);
     const [name, setName] = useState("");
     const [density, setDensity] = useState("");
+    const [previousZoom, setPreviousZoom] = useState("");
+
+    useMapEvent("zoomstart", () => {
+      setPreviousZoom(map.getZoom());
+    });
+
+    useMapEvent("zoomend", () => {
+      const zoomLevel = map.getZoom();
+
+      if (previousZoom !== zoomLevel) {
+        setZoomByButton(false);
+      }
+
+      if (!zoomByButton) {
+        if (zoomLevel <= 7) {
+          setSelectedLevel(1);
+        } else {
+          setSelectedLevel(2);
+        }
+      }
+    });
 
     useEffect(() => {
       if (selectedDistrictFeature && map) {
@@ -47,7 +71,6 @@ const Map = ({
           map.fitBounds(geoJsonBounds);
         }
 
-        console.log("selectedDistrictFeature", selectedDistrictFeature);
         const { _northEast, _southWest } = geoJsonBounds;
 
         // set Latitude and Longitude for the popup
@@ -68,7 +91,7 @@ const Map = ({
   return (
     <MapContainer className={mapClassName} {...rest}>
       {children(ReactLeaflet, Leaflet)}
-      {selectedDistrictFeature && <ZoomToDistrict />}
+      <MapUtils />
       <Box sx={{ position: "relative" }}>
         <Legend />
       </Box>

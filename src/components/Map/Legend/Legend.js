@@ -9,7 +9,6 @@ function Legend() {
   const map = useMap();
 
   useEffect(() => {
-    console.log("Legend Effect Run");
     if (map) {
       const legend = L.control({ position: "bottomright" });
       legend.onAdd = () => {
